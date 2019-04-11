@@ -34,7 +34,7 @@ class PyJadxDistribution(setuptools.Distribution):
 class Module(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
-        self.sourcedir = os.path.abspath(os.path.join(CURRENT_DIR))
+        self.sourcedir = os.path.abspath(os.path.join(CURRENT_DIR.as_posix()))
 
 
 class CMakeBuild(build_ext):
