@@ -159,8 +159,9 @@ bool resolve(JNI_CreateJavaVM_t& hdl, JNI_GetCreatedJavaVMs_t& hdl2) {
 Jadx::Jadx(void) {
   JNI_CreateJavaVM_t jvm_fnc              = nullptr;
   JNI_GetCreatedJavaVMs_t jvm_get_created = nullptr;
+
   if (not resolve(jvm_fnc, jvm_get_created)) {
-    std::cerr << "[-] Can resolve JVM symbols" << std::endl;
+    std::cerr << "[-] Can't resolve JVM symbols" << std::endl;
     return;
   }
 
@@ -190,6 +191,7 @@ Jadx::Jadx(void) {
     "rxjava2-swing-0.3.3.jar",
     "slf4j-api-1.7.25.jar",
   };
+
   static const std::string prefix = get_jadx_prefix() + "/jadx/0.9.0/";
 
   std::string classpath = std::accumulate(
