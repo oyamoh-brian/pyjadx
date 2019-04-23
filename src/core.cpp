@@ -61,38 +61,54 @@ std::vector<std::string> get_potential_libjvm_paths() {
 // expecting users to set an environment variable
 #else
   search_prefixes = {
-      "/usr/lib/jvm/default-java",                // ubuntu / debian distros
-      "/usr/lib/jvm/java",                        // rhel6
-      "/usr/lib/jvm",                             // centos6
-      "/usr/lib64/jvm",                           // opensuse 13
-      "/usr/local/lib/jvm/default-java",          // alt ubuntu / debian distros
-      "/usr/local/lib/jvm/java",                  // alt rhel6
-      "/usr/local/lib/jvm",                       // alt centos6
-      "/usr/local/lib64/jvm",                     // alt opensuse 13
+      "/usr/lib/jvm/default-java",
+      "/usr/lib/jvm/java",
+      "/usr/lib/jvm",
+      "/usr/lib64/jvm",
 
-      "/usr/local/lib/jvm/java-7-openjdk-amd64",  // alt ubuntu / debian distros
-      "/usr/lib/jvm/java-7-openjdk-amd64",        // alt ubuntu / debian distros
+      "/usr/local/lib/jvm/default-java",
+      "/usr/local/lib/jvm/java",
+      "/usr/local/lib/jvm",
+      "/usr/local/lib64/jvm",
 
-      "/usr/local/lib/jvm/java-6-openjdk-amd64",  // alt ubuntu / debian distros
-      "/usr/lib/jvm/java-6-openjdk-amd64",        // alt ubuntu / debian distros
+      "/usr/local/lib/jvm/java-7-openjdk-amd64",
+      "/usr/lib/jvm/java-7-openjdk-amd64",
+
+      "/usr/local/lib/jvm/java-6-openjdk-amd64",
+      "/usr/lib/jvm/java-6-openjdk-amd64",
 
       "/usr/lib/jvm/java-8-openjdk-amd64",
       "/usr/local/lib/jvm/java-8-openjdk-amd64",
 
-      "/usr/lib/jvm/java-11-openjdk-amd64",        // alt ubuntu / debian distros
-      "/usr/local/lib/jvm/java-11-openjdk-amd64",  // alt ubuntu / debian distros
+      "/usr/lib/jvm/java-10-openjdk-amd64",
+      "/usr/local/lib/jvm/java-10-openjdk-amd64",
 
-      "/usr/lib/jvm/java-7-oracle",               // alt ubuntu
-      "/usr/lib/jvm/java-8-oracle",               // alt ubuntu
-      "/usr/lib/jvm/java-6-oracle",               // alt ubuntu
+      "/usr/lib/jvm/java-11-openjdk-amd64",
+      "/usr/local/lib/jvm/java-11-openjdk-amd64",
 
-      "/usr/local/lib/jvm/java-7-oracle",         // alt ubuntu
-      "/usr/local/lib/jvm/java-8-oracle",         // alt ubuntu
-      "/usr/local/lib/jvm/java-6-oracle",         // alt ubuntu
-      "/usr/lib/jvm/default",                     // alt centos
-      "/usr/java/latest",                         // alt centos
+      "/usr/lib/jvm/java-6-oracle",
+      "/usr/lib/jvm/java-7-oracle",
+      "/usr/lib/jvm/java-8-oracle",
+
+      "/usr/local/lib/jvm/java-6-oracle",
+      "/usr/local/lib/jvm/java-7-oracle",
+      "/usr/local/lib/jvm/java-8-oracle",
+
+      "/usr/lib/jvm/java-9-jdk",
+      "/usr/local/lib/jvm/java-9-jdk",
+
+      "/usr/lib/jvm/java-10-jdk",
+      "/usr/local/lib/jvm/java-10-jdk",
+
+      "/usr/lib/jvm/java-11-jdk",
+      "/usr/local/lib/jvm/java-11-jdk",
+
+      "/usr/lib/jvm/default",
+      "/usr/lib/jvm/default-runtime",
+
+      "/usr/java/latest",
   };
-  search_suffixes = {"", "/jre/lib/amd64/server", "jre/lib/amd64"};
+  search_suffixes = {"", "/jre/lib/amd64/server", "jre/lib/amd64", "lib/server"};
   file_name = "libjvm.so";
 #endif
   // From direct environment variable
