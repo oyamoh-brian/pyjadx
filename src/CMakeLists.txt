@@ -1,5 +1,6 @@
 include("${CMAKE_CURRENT_LIST_DIR}/jadx/CMakeLists.txt")
 include("${CMAKE_CURRENT_LIST_DIR}/java/CMakeLists.txt")
+include("${CMAKE_CURRENT_LIST_DIR}/org/CMakeLists.txt")
 
 
 target_include_directories(jadxjni INTERFACE ${CMAKE_CURRENT_LIST_DIR})

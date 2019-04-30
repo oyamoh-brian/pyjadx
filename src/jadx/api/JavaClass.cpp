@@ -33,8 +33,12 @@ JavaClass::JavaClass(JNIEnv& env, const Object<>& obj) {
 }
 
 std::string JavaClass::getCode() {
-  static auto&& getCode = this->clazz().GetMethod<String()>(this->env(), "getCode");
-  return Make<std::string>(this->env(), this->obj_.Call(this->env(), getCode));
+  try {
+    static auto&& getCode = this->clazz().GetMethod<String()>(this->env(), "getCode");
+    return Make<std::string>(this->env(), this->obj_.Call(this->env(), getCode));
+  } catch (const jni::PendingJavaException& e) {
+    return "";
+  }
 }
 
 
