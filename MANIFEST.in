@@ -1,4 +1,4 @@
-include README.rst setup.cfg CMakeLists.txt LICENSE
+include README.md setup.cfg CMakeLists.txt LICENSE
 
 # Examples
 recursive-include examples *.py *.apk
