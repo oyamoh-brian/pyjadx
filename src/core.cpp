@@ -108,7 +108,7 @@ std::vector<std::string> get_potential_libjvm_paths() {
 
       "/usr/java/latest",
   };
-  search_suffixes = {"", "/jre/lib/amd64/server", "jre/lib/amd64", "lib/server"};
+  search_suffixes = {"", "/jre/lib/amd64/server", "jre/lib/amd64", "lib/server", "/lib/amd64/server/"};
   file_name = "libjvm.so";
 #endif
   // From direct environment variable
@@ -221,7 +221,7 @@ Jadx::Jadx(void) {
     "jadx-cli-dev.jar",
   };
 
-  static const std::string prefix = get_jadx_prefix() + "/jadx/3eee83c2/";
+  static const std::string prefix = get_jadx_prefix() + "/jadx/c3f7a04/";
 
   std::string classpath = std::accumulate(
       std::begin(jadx_libraries),
