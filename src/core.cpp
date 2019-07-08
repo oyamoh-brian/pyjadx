@@ -54,7 +54,7 @@ std::vector<std::string> get_potential_libjvm_paths() {
   file_name = "jvm.dll";
 #elif __APPLE__
   search_prefixes = {""};
-  search_suffixes = {"", "/jre/lib/server"};
+  search_suffixes = {"", "/jre/lib/server", "/lib/server"};
   file_name = "libjvm.dylib";
 
 // SFrame uses /usr/libexec/java_home to find JAVA_HOME; for now we are
@@ -182,33 +182,46 @@ Jadx::Jadx(void) {
   }
 
   static constexpr std::initializer_list<const char*> jadx_libraries = {
-    "android-5.1.jar",
-    "annotations-16.0.3.jar",
-    "apksig-3.3.0.jar",
-    "asm-7.0.jar",
-    "cloning-1.9.11.jar",
-    "commons-io-2.6.jar",
-    "commons-lang3-3.8.1.jar",
-    "commons-text-1.6.jar",
-    "dx-1.16.jar",
+    "smali-2.2.7.jar",
+    "stringtemplate-3.2.1.jar",
+    "rxjava2-swing-0.3.7.jar",
     "gson-2.8.5.jar",
-    "image-viewer-1.2.3.jar",
-    "jadx-cli-0.9.0.jar",
-    "jadx-core-0.9.0.jar",
-    "jadx-gui-0.9.0.jar",
-    "jcommander-1.74.jar",
+    "asm-7.1.jar",
+    "guava-28.0-jre.jar",
+    "dexlib2-2.2.7.jar",
+    "animal-sniffer-annotations-1.17.jar",
+    "commons-lang3-3.9.jar",
+    "apksig-3.4.1.jar",
     "jfontchooser-1.0.5.jar",
+    "rsyntaxtextarea-3.0.3.jar",
+    "jadx-gui-dev.jar",
+    "image-viewer-1.2.3.jar",
+    "failureaccess-1.0.1.jar",
+    "util-2.2.7.jar",
+    "slf4j-api-1.7.26.jar",
+    "baksmali-2.2.7.jar",
+    "commons-text-1.6.jar",
+    "rxjava-2.2.10.jar",
+    "android-29-res.jar",
+    "antlr-runtime-3.5.2.jar",
+    "j2objc-annotations-1.3.jar",
+    "android-29-clst.jar",
     "logback-classic-1.2.3.jar",
     "logback-core-1.2.3.jar",
-    "objenesis-2.6.jar",
+    "checker-qual-2.8.1.jar",
+    "jsr305-3.0.2.jar",
+    "error_prone_annotations-2.3.2.jar",
+    "jcommander-1.74.jar",
+    "annotations-17.0.0.jar",
+    "antlr-2.7.7.jar",
+    "jadx-core-dev.jar",
     "reactive-streams-1.0.2.jar",
-    "rsyntaxtextarea-3.0.0.jar",
-    "rxjava-2.2.5.jar",
-    "rxjava2-swing-0.3.3.jar",
-    "slf4j-api-1.7.25.jar",
+    "dx-1.16.jar",
+    "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+    "jadx-cli-dev.jar",
   };
 
-  static const std::string prefix = get_jadx_prefix() + "/jadx/0.9.0/";
+  static const std::string prefix = get_jadx_prefix() + "/jadx/3eee83c2/";
 
   std::string classpath = std::accumulate(
       std::begin(jadx_libraries),
