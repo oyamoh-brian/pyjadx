@@ -149,6 +149,10 @@ PYBIND11_MODULE(pyjadx, jadx_module) {
     .def_property_readonly("longname", &PrimitiveType::getLongName, "the long name of the primitive type");
 
   py::class_<JavaClass>(jadx_module, "JavaClass", "")
+
+    .def_property_readonly("code",
+          &JavaClass::getCode,
+          "Java decompiled code as a ``str``")
     .def_property_readonly("code_highlight",
         [] (JavaClass& cls) -> py::object {
           try {
