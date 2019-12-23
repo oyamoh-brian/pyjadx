@@ -72,3 +72,7 @@ if (UNIX)
 elseif(WIN32)
   set_target_properties(pyjadx PROPERTIES SUFFIX ".pyd")
 endif()
+
+if (PYJADX_ASAN)
+  target_link_libraries(pyjadx INTERFACE asan)
+endif()

@@ -5,6 +5,7 @@ set(THIRD_PARTY_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/third-party/")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(JVM_STATIC_LINK "Link against JVM staticaly" OFF)
+option(PYJADX_ASAN "Enable ASAN" OFF)
 
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.git")
@@ -72,6 +73,21 @@ if (JVM_STATIC_LINK)
   target_compile_definitions(jadxjni INTERFACE -DJVM_STATIC_LINK)
   target_link_libraries(jadxjni INTERFACE ${JAVA_JVM_LIBRARY})
 endif()
+
+# ASAN - LSAN - TSAN - USAN
+# ~~~~~~~~~~~~~~~~~~~~~~~~~
+set(SANITIZER_FLAGS -fno-omit-frame-pointer -g -O1)
+if (PYJADX_ASAN)
+  message(STATUS "Address sanitizer enabled")
+  list(APPEND SANITIZER_FLAGS -fsanitize=address)
+
+  target_link_options(jadxjni INTERFACE -fsanitize=address)
+  #target_link_libraries(jadxjni INTERFACE asan)
+  target_compile_options(jadxjni INTERFACE ${SANITIZER_FLAGS})
+  add_executable(leak tests/leak.cpp)
+  target_link_libraries(leak PUBLIC jadxjni)
+endif()
+
 
 target_compile_features(jadxjni INTERFACE cxx_std_17)
 add_subdirectory(bindings)

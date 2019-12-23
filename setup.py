@@ -1,16 +1,13 @@
 import os
-import re
 import sys
 import platform
 import subprocess
-import glob
 import setuptools
 import pathlib
 
 from pkg_resources import Distribution, get_distribution
 
 from setuptools import setup, Extension
-from setuptools import Extension
 from setuptools.command.build_ext import build_ext, copy_file
 
 from distutils.version import LooseVersion
@@ -25,10 +22,12 @@ CURRENT_DIR = pathlib.Path(__file__).parent
 class PyJadxDistribution(setuptools.Distribution):
     global_options = setuptools.Distribution.global_options + [
         ('static-jvm', None, 'Link against JVM statically'),
-        ]
+        ('asan', None, 'Enable ASAN'),
+    ]
 
     def __init__(self, attrs=None):
         self.static_jvm = False
+        self.asan = False
         super().__init__(attrs)
 
 class Module(Extension):
@@ -56,16 +55,22 @@ class CMakeBuild(build_ext):
         fullname = self.get_ext_fullname(ext.name)
         filename = self.get_ext_filename(fullname)
 
-        source_dir                     = ext.sourcedir
-        build_temp                     = self.build_temp
-        extdir                         = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-        static_jvm                     = "ON" if self.distribution.static_jvm else "OFF"
+        source_dir = ext.sourcedir
+        build_temp = self.build_temp
+        extdir     = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        static_jvm = "ON" if self.distribution.static_jvm else "OFF"
+        asan       = "ON" if self.distribution.asan else "OFF"
+
+        if asan == "ON":
+            log.info("ASAN Enabled!")
+
 
         cmake_library_output_directory = os.path.abspath(os.path.dirname(build_temp))
         cmake_args = [
             '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}'.format(cmake_library_output_directory),
             '-DPYTHON_EXECUTABLE={}'.format(sys.executable),
             '-DJVM_STATIC_LINK={}'.format(static_jvm),
+            '-DPYJADX_ASAN={}'.format(asan),
         ]
 
 
@@ -107,7 +112,7 @@ class CMakeBuild(build_ext):
 
 
 # From setuptools-git-version
-command       = 'git describe --tags --long --dirty'
+command       = 'git describe --tags --long --dirty --always'
 is_tagged_cmd = 'git tag --list --points-at=HEAD'
 fmt           = '{tag}.dev2'
 fmt_tagged    = '{tag}'
@@ -146,12 +151,12 @@ def get_version():
         is_tagged = False
         try:
             is_tagged = check_if_tagged()
-        except:
+        except Exception:
             is_tagged = False
 
         try:
             return get_git_version(is_tagged)
-        except:
+        except Exception:
             pass
 
     if pkg_info.is_file():
@@ -160,8 +165,6 @@ def get_version():
 
 
 version = get_version()
-
-
 
 setup(
     distclass=PyJadxDistribution,
