@@ -17,8 +17,14 @@
 namespace jni {
 
 std::string get_jadx_prefix(void) {
+
+  char* env_value = nullptr;
+  if ((env_value = getenv("JADX_PREFIX")) != nullptr) {
+    return env_value;
+  }
+
   std::string found;
-  dl_iterate_phdr([] (dl_phdr_info* info, size_t size, void* data) {
+  dl_iterate_phdr([] (dl_phdr_info* info, size_t, void* data) {
       std::string* out = reinterpret_cast<std::string*>(data);
       if (info->dlpi_name == nullptr) {
         return 0;

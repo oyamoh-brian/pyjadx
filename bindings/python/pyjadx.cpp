@@ -42,6 +42,8 @@ PYBIND11_MODULE(pyjadx, jadx_module) {
 
   py::class_<jni::Jadx>(jadx_module, "Jadx", "")
     .def(py::init<>())
+    .def_static("get", &jni::Jadx::instance, py::return_value_policy::reference)
+    //.def("__init__", [] (jni::Jadx& self) { self = jni::Jadx::instance(); })
     .def("load",
         &jni::Jadx::load,
         "Load an APK or Dex file to decompile",

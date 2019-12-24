@@ -24,7 +24,7 @@ jadx::api::JadxDecompiler Jadx::load(const std::string& apk_path,
       size_t deobfuscation_min_length,
       size_t deobfuscation_max_length)
 {
-
+  const std::lock_guard<std::mutex> lock(jvm_mu);
   jni::jadx::api::JadxArgs jadx_args{this->env()};
 
   jadx_args.setInputFiles({apk_path});
@@ -37,6 +37,7 @@ jadx::api::JadxDecompiler Jadx::load(const std::string& apk_path,
 
   jni::jadx::api::JadxDecompiler decompiler{this->env(), jadx_args};
   decompiler.load();
+
   return decompiler;
 }
 
@@ -172,6 +173,20 @@ bool resolve(JNI_CreateJavaVM_t& hdl, JNI_GetCreatedJavaVMs_t& hdl2) {
 
 }
 
+Jadx& Jadx::instance() {
+  const std::lock_guard<std::mutex> lock(jvm_mu);
+  if (instance_ == nullptr) {
+    instance_ = new Jadx{};
+    std::atexit(destroy);
+  }
+  return *instance_;
+}
+
+void Jadx::destroy(void) {
+  const std::lock_guard<std::mutex> lock(jvm_mu);
+  delete instance_;
+}
+
 Jadx::Jadx(void) {
   JNI_CreateJavaVM_t jvm_fnc              = nullptr;
   JNI_GetCreatedJavaVMs_t jvm_get_created = nullptr;
@@ -233,7 +248,17 @@ Jadx::Jadx(void) {
 
   std::string classpath_option = "-Djava.class.path=" + classpath;
 
-  JavaVMOption opt[2];
+
+  // 1. Get the number of JVM created
+  int nJVMs;
+  jvm_get_created(nullptr, 0, &nJVMs);
+  if (nJVMs > 0) {
+    jvm_get_created(&this->jvm_, 1, &nJVMs);
+    this->jvm_->AttachCurrentThread(reinterpret_cast<void**>(&this->env_), nullptr);
+    return;
+  }
+
+  JavaVMOption opt[1];
   opt[0].optionString = const_cast<char*>(classpath_option.c_str());
 
   JavaVMInitArgs args;
@@ -246,21 +271,16 @@ Jadx::Jadx(void) {
 
   // It mays occurs if a JVM is already created
   if (created != JNI_OK or this->jvm_ == nullptr) {
-    // 1. Get the number of JVM created
-    int nJVMs;
-    jvm_get_created(nullptr, 0, &nJVMs);
-    if (nJVMs == 0) {
-      std::cerr << "[-] Error while creating the JVM" << std::endl;
-      std::abort();
-    }
-    jvm_get_created(&this->jvm_, 1, &nJVMs);
-    this->jvm_->GetEnv(reinterpret_cast<void**>(&this->env_), JNI_VERSION_1_6);
+    std::cerr << "[-] Error while creating the JVM" << std::endl;
+    std::abort();
   }
+
+  //this->jvm_->AttachCurrentThread(reinterpret_cast<void**>(&this->env_), nullptr);
 }
 
 Jadx::~Jadx(void) {
   if (this->jvm_) {
-    //this->jvm_->DetachCurrentThread();
+    this->jvm_->DetachCurrentThread();
     //this->jvm_->DestroyJavaVM();
   }
 }

@@ -37,6 +37,8 @@ bool resolve_get_created_jvm(JNI_GetCreatedJavaVMs_t& hdl);
 
 class Jadx {
   public:
+  static Jadx& instance();
+  public:
   Jadx(void);
   jadx::api::JadxDecompiler load(const std::string& apk_path,
       bool escape_unicode = true,
@@ -49,6 +51,7 @@ class Jadx {
   ~Jadx(void);
 
   private:
+  static void destroy(void);
   inline JNIEnv& env(void) {
     return *(this->env_);
   }
@@ -59,6 +62,7 @@ class Jadx {
 
   JavaVM* jvm_{nullptr};
   JNIEnv* env_{nullptr};
+  inline static thread_local Jadx* instance_ = nullptr;
 
 
 };

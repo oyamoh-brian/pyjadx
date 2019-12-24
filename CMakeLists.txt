@@ -77,6 +77,8 @@ endif()
 # ASAN - LSAN - TSAN - USAN
 # ~~~~~~~~~~~~~~~~~~~~~~~~~
 set(SANITIZER_FLAGS -fno-omit-frame-pointer -g -O1)
+add_executable(leak tests/leak.cpp)
+target_link_libraries(leak PUBLIC jadxjni dl)
 if (PYJADX_ASAN)
   message(STATUS "Address sanitizer enabled")
   list(APPEND SANITIZER_FLAGS -fsanitize=address)
@@ -84,8 +86,6 @@ if (PYJADX_ASAN)
   target_link_options(jadxjni INTERFACE -fsanitize=address)
   #target_link_libraries(jadxjni INTERFACE asan)
   target_compile_options(jadxjni INTERFACE ${SANITIZER_FLAGS})
-  add_executable(leak tests/leak.cpp)
-  target_link_libraries(leak PUBLIC jadxjni)
 endif()
 
 
