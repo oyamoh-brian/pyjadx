@@ -76,3 +76,14 @@ endif()
 if (PYJADX_ASAN)
   target_link_libraries(pyjadx INTERFACE asan)
 endif()
+
+
+if (CMAKE_BUILD_TYPE MATCHES Release AND UNIX)
+  add_custom_command(
+    TARGET pyjadx
+    COMMENT "Strip Python bindings"
+    POST_BUILD
+    COMMAND
+      ${CMAKE_STRIP} --discard-all --discard-locals --strip-all --strip-unneeded $<TARGET_FILE:pyjadx>
+  )
+endif()
